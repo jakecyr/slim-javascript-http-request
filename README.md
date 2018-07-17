@@ -11,13 +11,13 @@ var http = new Http();
 
 http.get('/names/')
   .then(function(res){
-    var responseText = res.data;
-    var statusCode = res.code;
-	  console.log(responseText);
-	})
-	.catch(function(err){
-		console.error(err);
-	})
+      var responseText = res.data;
+      var statusCode = res.code;
+      console.log(responseText);
+  })
+  .catch(function(err){
+      console.error(err);
+  })
 ```
 
 
@@ -27,11 +27,11 @@ var http = new Http();
 
 http.post('/names/', {name: 'jake'})
   .then(function(res){
-    var responseText = res.data;
-    var statusCode = res.code;
-	  console.log(responseText);
+      var responseText = res.data;
+      var statusCode = res.code;
+      console.log(responseText);
 	})
 	.catch(function(err){
-		console.error(err);
+		  console.error(err);
 	})
 ```
