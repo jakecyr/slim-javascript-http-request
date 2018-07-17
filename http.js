@@ -33,15 +33,15 @@ function Http(){
 		if(!url) throw new Error('URL is required to make a ' + method + ' request');
 
 		var complete, failed, selfObj = this, xhttp = new XMLHttpRequest();
-		
+
 		xhttp.onreadystatechange = function(){
 		    if(this.status == 200){
-		    	selfObj.complete(xhttp.responseText);
+			selfObj.complete({
+				data: xhttp.responseText,
+				code: this.status
+			});
 		    } else{
-		    	selfObj.error({
-		    		data: xhttp.responseText,
-		    		code: this.status
-		    	});
+			selfObj.error(xhttp.responseText);
 		    }
 		}
 
