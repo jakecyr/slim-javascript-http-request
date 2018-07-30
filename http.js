@@ -3,21 +3,27 @@
 function Http() {
   var _this = this;
 
-  this.callback = function(res) {
-    console.log(1, res);
-  };
+  this.callback = function(res) {};
 
+  this.catch = function(errorCallback) {
+    this.errorCallback = errorCallback;
+    return this;
+  };
   this.then = function(callback) {
     _this.callback = callback;
+    return _this;
   };
-  this.get = function(url, callback) {
+  this.get = function(url, callback, errorCallback) {
     if (!url) throw new Error("URL is required to make a GET request");
     if (callback) this.callback = callback;
+    if (errorCallback) this.errorCallback = errorCallback;
+
     return this.request("GET", url, callback);
   };
-  this.post = function(url, data, callback) {
+  this.post = function(url, data, callback, errorCallback) {
     if (!url) throw new Error("URL is required to make a POST request");
     if (callback) this.callback = callback;
+    if (errorCallback) this.errorCallback = errorCallback;
 
     if (data) {
       var first = true;
@@ -45,12 +51,26 @@ function Http() {
     xhttp.send();
 
     xhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        if (selfObj.callback) {
-          selfObj.callback({
-            data: xhttp.responseText,
-            code: this.status
-          });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          if (selfObj.callback) {
+            selfObj.callback({
+              data: xhttp.responseText,
+              code: this.status
+            });
+          }
+        } else {
+          if (selfObj.errorCallback) {
+            selfObj.errorCallback({
+              error: xhttp.responseText,
+              code: this.status
+            });
+          } else {
+            selfObj.callback({
+              error: xhttp.responseText,
+              code: this.status
+            });
+          }
         }
       }
     };
