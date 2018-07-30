@@ -1,5 +1,5 @@
 # Slim Http JavaScript Object
-Slim Http JavaScript Object to make GET and POST requests. An alternative to the larger jQuery library is only the http object is required.
+Slim Http JavaScript Object to make GET and POST requests. An alternative to the larger jQuery library if only the http object is required. Can also be used with the Vue.js library for HTTP requests.
 
 ## Usage
 
