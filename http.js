@@ -1,22 +1,20 @@
 function Http(){
-	this.complete = function(){}
-	this.error = function(){}
+	this.callback = function(res){
+		console.log(1, res)
+	};
 
-	this.then = function(callback){
-		this.complete = callback;
-		return this;
+	this.then = (callback)=>{
+		this.callback = callback;
 	}
-	this.catch = function(callback){
-		this.error = callback;
-		return this;
-	}
-	this.get = function(url){
+	this.get = function(url, callback){
 		if(!url) throw new Error('URL is required to make a GET request');
-		return this.request('GET', url);
+		if(callback) this.callback = callback;
+		return this.request('GET', url, callback);
 	}
-	this.post = function(url, data){
+	this.post = function(url, data, callback){
 		if(!url) throw new Error('URL is required to make a POST request');
-
+		if(callback) this.callback = callback;
+		
 		if(data){
 			var first = true;
 
@@ -26,27 +24,28 @@ function Http(){
 			}
 		}
 
-		return this.request('POST', url);
+		return this.request('POST', url, callback);
 	}
-	this.request = function(method, url){
+	this.request = (method, url, callback)=>{
 		if(method !== 'GET' && method !== 'POST') throw new Error('Only GET and POST requests are allowed');
 		if(!url) throw new Error('URL is required to make a ' + method + ' request');
 
 		var complete, failed, selfObj = this, xhttp = new XMLHttpRequest();
 
+		xhttp.open(method, url);
+		xhttp.send();
+
 		xhttp.onreadystatechange = function(){
-		    if(this.status == 200){
-			selfObj.complete({
-				data: xhttp.responseText,
-				code: this.status
-			});
-		    } else{
-			selfObj.error(xhttp.responseText);
+		    if(this.readyState == 4 && this.status == 200){
+				if(selfObj.callback){
+					selfObj.callback({
+						data: xhttp.responseText,
+						code: this.status
+					});
+				}
 		    }
 		}
 
-		xhttp.open(method, url, true);
-		xhttp.send();
 		return this;
 	}
 }
