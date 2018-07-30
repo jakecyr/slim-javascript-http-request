@@ -54,9 +54,21 @@ function Http() {
       if (this.readyState == 4) {
         if (this.status == 200) {
           if (selfObj.callback) {
+            var response = xhttp.responseText;
+            var type = "text";
+
+            try {
+              var parsed = JSON.parse(response);
+              response = parsed;
+              type = "json";
+            } catch (e) {
+              type = "plain";
+            }
+
             selfObj.callback({
-              data: xhttp.responseText,
-              code: this.status
+              data: response,
+              code: this.status,
+              type: type
             });
           }
         } else {
