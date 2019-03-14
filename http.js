@@ -1,92 +1,121 @@
-"use strict";
+function Http(){
+    this.get = get;
+    this.post = post;
 
-function Http() {
-  var _this = this;
+    function get(url){
+        let vm = this;
+        let success = undefined;
+        let error = undefined;
+        
+        request('GET', url)
+            .then(function(res){
+                if(success){
+                    success(res);
+                }
+            })
+            .catch(function(err){
+                if(error){
+                    error(err);
+                }
+            });
 
-  this.callback = function(res) {};
+        let returnObj = {};
 
-  this.catch = function(errorCallback) {
-    this.errorCallback = errorCallback;
-    return this;
-  };
-  this.then = function(callback) {
-    _this.callback = callback;
-    return _this;
-  };
-  this.get = function(url, callback, errorCallback) {
-    if (!url) throw new Error("URL is required to make a GET request");
-    if (callback) this.callback = callback;
-    if (errorCallback) this.errorCallback = errorCallback;
+        returnObj.then = function(cb){
+            success = cb;
+            return returnObj;
+        };
+        
+        returnObj.catch = function(cb){
+            error = cb;
+            return returnObj;
+        };
 
-    return this.request("GET", url, callback);
-  };
-  this.post = function(url, data, callback, errorCallback) {
-    if (!url) throw new Error("URL is required to make a POST request");
-    if (callback) this.callback = callback;
-    if (errorCallback) this.errorCallback = errorCallback;
-
-    if (data) {
-      var first = true;
-
-      for (var key in data) {
-        url += (first ? "?" : "&") + key + "=" + data[key];
-        first = false;
-      }
+        return returnObj;
     }
+    function post(url, data){
+        let vm = this;
+        let success = undefined;
+        let error = undefined;
+        
+        request('POST', url, data)
+            .then(function(res){
+                if(success){
+                    success(res);
+                }
+            })
+            .catch(function(err){
+                if(error){
+                    error(err);
+                }
+            });
 
-    return this.request("POST", url, callback);
-  };
-  this.request = function(method, url, callback) {
-    if (method !== "GET" && method !== "POST")
-      throw new Error("Only GET and POST requests are allowed");
-    if (!url)
-      throw new Error("URL is required to make a " + method + " request");
+        let returnObj = {};
 
-    var complete,
-      failed,
-      selfObj = _this,
-      xhttp = new XMLHttpRequest();
+        returnObj.then = function(cb){
+            success = cb;
+            return returnObj;
+        };
+        
+        returnObj.catch = function(cb){
+            error = cb;
+            return returnObj;
+        };
 
-    xhttp.open(method, url);
-    xhttp.send();
+        return returnObj;
+    }
+    function request(type, url, data){
+        let http = new XMLHttpRequest();
+        let success = undefined;
+        let error = undefined;
+        let returnObj = {};
 
-    xhttp.onreadystatechange = function() {
-      if (this.readyState == 4) {
-        if (this.status == 200) {
-          if (selfObj.callback) {
-            var response = xhttp.responseText;
-            var type = "text";
+        if(type == 'GET'){
+            http.open(type, url, true);
+            http.send();
+        } else if(type == 'POST'){
+            http.open("POST", url, true);
+            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-            try {
-              var parsed = JSON.parse(response);
-              response = parsed;
-              type = "json";
-            } catch (e) {
-              type = "plain";
+            let queries = [];
+            data = data || {};
+
+            for(let key in data){
+                queries.push(key + '=' + encodeURIComponent(data[key] || ''));
             }
 
-            selfObj.callback({
-              data: response,
-              code: this.status,
-              type: type
-            });
-          }
-        } else {
-          if (selfObj.errorCallback) {
-            selfObj.errorCallback({
-              error: xhttp.responseText,
-              code: this.status
-            });
-          } else {
-            selfObj.callback({
-              error: xhttp.responseText,
-              code: this.status
-            });
-          }
+            http.send(queries);
+        } else{
+            return console.error(type, 'method not supported');
         }
-      }
-    };
 
-    return _this;
-  };
-}
+        http.onreadystatechange = function(){
+            if(this.readyState == 4){
+                if(this.status == 200){
+                    if(success){
+                        success(http.responseText)
+                    }
+                } else{
+                    if(error){
+                        error({
+                            status: http.status,
+                            body: http.responseText,
+                        });
+                    }
+                }
+            }
+        };
+
+        returnObj.then = function(cb){
+            success = cb;
+            return returnObj;
+        };
+        
+        returnObj.catch = function(cb){
+            error = cb;
+            return returnObj;
+        };
+
+        return returnObj;
+    }
+};

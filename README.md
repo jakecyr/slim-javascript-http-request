@@ -10,29 +10,12 @@ Download the `http.js` file and include it in your project.
 ```
 var http = new Http();
 
-http.get('/names/')
+http
+  .get('/names/')
   .then(function(res){
-      var responseText = res.data;
-      var statusCode = res.code;
-      var responseType = res.type;
-      console.log(responseText);
+      console.log(res);
   })
   .catch(function(err){
-      console.error(err.error);
-  })
-```
-
-#### Using callback:
-```
-var http = new Http();
-
-http.get('/names/', function(res){
-      var responseText = res.data;
-      var statusCode = res.code;
-      var responseType = res.type;
-      
-      console.log(responseText);
-  }, function(err){
       console.error(err.error);
   })
 ```
@@ -41,13 +24,12 @@ http.get('/names/', function(res){
 ```
 var http = new Http();
 
-http.post('/names/', {name: 'jake'})
+http
+  .post('/names/', {name: 'jake'})
   .then(function(res){
-      var responseText = res.data;
-      var statusCode = res.code;
-      console.log(responseText);
+      console.log(res);
   })
   .catch(function(err){
-      console.error(err.error);
+      console.error(err.status, err.body);
   })
 ```
