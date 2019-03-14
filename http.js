@@ -3,66 +3,10 @@ function Http(){
     this.post = post;
 
     function get(url){
-        let vm = this;
-        let success = undefined;
-        let error = undefined;
-        
-        request('GET', url)
-            .then(function(res){
-                if(success){
-                    success(res);
-                }
-            })
-            .catch(function(err){
-                if(error){
-                    error(err);
-                }
-            });
-
-        let returnObj = {};
-
-        returnObj.then = function(cb){
-            success = cb;
-            return returnObj;
-        };
-        
-        returnObj.catch = function(cb){
-            error = cb;
-            return returnObj;
-        };
-
-        return returnObj;
+        return request('GET', url);
     }
     function post(url, data){
-        let vm = this;
-        let success = undefined;
-        let error = undefined;
-        
-        request('POST', url, data)
-            .then(function(res){
-                if(success){
-                    success(res);
-                }
-            })
-            .catch(function(err){
-                if(error){
-                    error(err);
-                }
-            });
-
-        let returnObj = {};
-
-        returnObj.then = function(cb){
-            success = cb;
-            return returnObj;
-        };
-        
-        returnObj.catch = function(cb){
-            error = cb;
-            return returnObj;
-        };
-
-        return returnObj;
+        return request('POST', url, data);
     }
     function request(type, url, data){
         let http = new XMLHttpRequest();
