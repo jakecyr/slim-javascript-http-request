@@ -34,9 +34,15 @@ function Http() {
 
         http.onreadystatechange = function () {
             if (this.readyState == 4) {
+                var responseType = http.getResponseHeader('content-type');
+
                 if (this.status == 200) {
                     if (success) {
-                        success(http.responseText);
+                        if(responseType == 'application/json'){
+                            success(JSON.parse(http.responseText));
+                        } else{
+                            success(http.responseText);
+                        }
                     }
                 } else {
                     if (error) {
