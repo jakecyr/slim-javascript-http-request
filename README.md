@@ -7,7 +7,7 @@ Download the `http.js` file and include it in your project.
 
 ### Example `GET ` request:
 #### Using promises:
-```
+```javascript
 var http = new Http();
 
 http
@@ -21,7 +21,7 @@ http
 ```
 
 ### Example `POST` request:
-```
+```javascript
 var http = new Http();
 
 http
