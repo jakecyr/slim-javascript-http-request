@@ -1,4 +1,5 @@
 # Slim JavaScript Http Request Library
+
 Slim JavaScript Http Request library to make GET and POST requests. An alternative to the larger jQuery library if only the http object is required. Can also be used with the Vue.js library for HTTP requests.
 
 ## Usage
@@ -6,9 +7,9 @@ Slim JavaScript Http Request library to make GET and POST requests. An alternati
 Download the `http.js` file and include it in your project.
 
 ### Example `GET ` request:
-#### Using promises:
+
 ```javascript
-var http = new Http();
+const http = new Http();
 
 http
   .get('/names/')
@@ -20,12 +21,43 @@ http
   })
 ```
 
-### Example `POST` request:
+### Example `DELETE ` request:
+
 ```javascript
-var http = new Http();
+const http = new Http();
 
 http
-  .post('/names/', {name: 'jake'})
+  .delete('/names/?test=deleteMe')
+  .then(function(res){
+      console.log(res);
+  })
+  .catch(function(err){
+      console.error(err.error);
+  })
+```
+
+### Example `POST` request:
+
+```javascript
+const http = new Http();
+
+http
+  .post('/names/', { name: 'jake' })
+  .then(function(res){
+      console.log(res);
+  })
+  .catch(function(err){
+      console.error(err.status, err.body);
+  })
+```
+
+### Example `PUT` request:
+
+```javascript
+const http = new Http();
+
+http
+  .put('/names/', { name: 'jake' })
   .then(function(res){
       console.log(res);
   })

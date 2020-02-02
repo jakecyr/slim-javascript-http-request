@@ -1,0 +1,29 @@
+<script src="../src/http.js"></script>
+
+<script>
+    const http = new Http();
+
+    http
+        .get('https://httpbin.org/get?test=1')
+        .then(console.log)
+        .catch(console.error)
+
+    http
+        .delete('https://httpbin.org/delete?test=deleteMe')
+        .then(console.log)
+        .catch(console.error)
+
+    http
+        .post('https://httpbin.org/post', {
+            testDataHere: 'test values'
+        })
+        .then(console.log)
+        .catch(console.error)
+
+    http
+        .put('https://httpbin.org/put', {
+            testDataHere: 'test values'
+        })
+        .then(console.log)
+        .catch(console.error)
+</script>
